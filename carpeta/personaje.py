@@ -4,19 +4,17 @@ pygame.init()
 class Personaje():
     def __init__(self, x, y,image):
         self.flip = False
-         try:
-            self.image = pygame.image.load(player_image)  # Cargar la imagen del personaje
-            self.image = self.image.convert_alpha()  # Convertir la imagen para mejorar el rendimiento
-            self.image = pygame.transform.scale(self.image, (25, 25))  # Redimensionar imagen
-        except pygame.error:
-            print(f"Error: No se pudo cargar la imagen en {player_image}. Verifica la ruta.")
-            self.image = None  # Asignar None para evitar fallos
 
-        #inicilalizar el personaje como un rectangulo
-        self.x = x
-        self.y = y      
-        # Usar pygame.Rect para definir la forma del personaje+
+        if image:
+            self.image = image.convert_alpha()  
+
+        else:
+            print("Advertencia: Imagen no válida, se usará un rectángulo blanco por defecto.")
+            self.image = pygame.Surface((25, 25))
+            self.image.fill((255, 0, 0))
+
         self.forma = pygame.Rect(x, y, 25, 25)
+
    
          
     

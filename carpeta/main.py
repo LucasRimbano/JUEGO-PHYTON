@@ -3,18 +3,21 @@ from personaje import Personaje
 
 pygame.init()
 # Definir la pantalla       
-
-screen = pygame.display.set_mode([1500, 900]) #quiero que sea blanco cual es? 
+screen = pygame.display.set_mode([1500, 900]) 
 
 pygame.display.set_caption("Mi primer juego")
 try:
-    player_image = pygame.image.load("asetts//imagenes//personaje1.png")
-    player_image = pygame.transform.scale(player_image,(player_image.get_width()*0.09,player_image.get_height()*0.09))  # Redimensionar
+    image = pygame.image.load("asetts//imagenes//personaje1.png")
+    image = pygame.transform.scale(image, (int(image.get_width() * 0.09), int(image.get_height() * 0.09)))
 except pygame.error:
     print("Error: No se pudo cargar la imagen. Verifica la ruta.")
-    player_image = None  # Evita que el juego falle si la imagen no se encuentra
+    image = None  # Ahora usamos 'image' en todo el código
+if image is None:
+    print("La imagen no se cargó, usando rectángulo por defecto.")
+else:
+    print("Imagen cargada correctamente.")
 # Definir la clase Personaje
-jugador = Personaje(20, 20,image=player_image)  # Crear una instancia del personaje con la imagen cargada
+jugador = Personaje(20, 20,image=image)  # Crear una instancia del personaje con la imagen cargada
 
 # Variables de movimiento
 mover_arriba = False
