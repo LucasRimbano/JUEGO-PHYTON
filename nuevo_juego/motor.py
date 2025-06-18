@@ -14,6 +14,13 @@ except pygame.error:
 if fondo.get_width() < 500 or fondo.get_height() < 500:
     fondo = pygame.transform.scale(fondo, (1000, 600))
 
+
+try:
+    laser_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/laser.wav')
+    explosion_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/explosion.wav')
+    golpe_sonido =pygame.mixer.Sound('nuevo_juego/sonidos/choque.wav')
+except pygame.error:
+    print("Error al cargar uno de los sonidos .wav")
 width = fondo.get_width()
 height = fondo.get_height()
 window = pygame.display.set_mode((width, height))
@@ -65,12 +72,41 @@ class Jugador(pygame.sprite.Sprite):
             self.rect.left = 0
         if self.rect.right > width:
             self.rect.right = width
+    
+    def disparar(self):
+        bala = Balas(self.rect.centerx, self.rect.top)
+        grupo_jugador.add(bala)
+        grupo_balas_jugador.add(bala)
+        laser_sonido.play()
+# Clase de las balas
+class Balas(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        try:
+            self.image = pygame.image.load('nuevo_juego/imagenes/B1.png').convert_alpha()
+        except pygame.error:
+            print("Error al cargar la imagen de la bala. Verifica la ruta.")
+            self.image = pygame.Surface((10, 20))
+            self.image.fill((255, 255, 0))  # Cuadrado amarillo en caso de error
+        
+        self.rect = self.image.get_rect()
+        self.rect.centerx = x
+        self.rect.bottom = y
+        self.velocidad_y = -20
+
+    def update(self):
+        self.rect.y += self.velocidad_y
+        if self.rect.bottom < 0:
+            self.kill()
+
+
+grupo_jugador = pygame.sprite.Group()
 
 # Crear el jugador
 jugador = Jugador(width, height)
 jugadores = pygame.sprite.Group()
 jugadores.add(jugador)
-
+grupo_balas_jugador = pygame.sprite.Group()
 # Bucle principal
 run = True
 fps = 60
@@ -88,16 +124,20 @@ while run:
                 jugador.velocidad_x = -jugador.velocidad
             elif event.key == pygame.K_RIGHT:
                 jugador.velocidad_x = jugador.velocidad
+            elif event.key == pygame.K_SPACE:
+                jugador.disparar()
 
         elif event.type == pygame.KEYUP:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                 jugador.velocidad_x = 0
+        
 
     # Actualizar y dibujar
     jugadores.update()
+    grupo_balas_jugador.update()
     window.blit(fondo, (0, 0))
     jugadores.draw(window)
-    
+    grupo_balas_jugador.draw(window)
      # Llamar a la función para dibujar la barra de vida
     barra_vida(window, 50, 50, jugador.vida)  # Cambia las coordenadas según sea necesario
 
