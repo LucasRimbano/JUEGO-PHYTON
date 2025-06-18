@@ -18,7 +18,27 @@ width = fondo.get_width()
 height = fondo.get_height()
 window = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Mi Juego")
+vida=100
+score=0
+blanco=(255,255,255)
+negro=(0,0,0)
 
+def score_total (frame, text , size, x, y):
+    font=pygame.font.SysFont('Small fonts',size, bold=True)
+    text_frame= font.render(text, True, blanco,negro)
+    text_rect = text_frame.get_rect()
+    text_rect.midtop=(900,y-25)
+    frame.blit (text_frame, text_rect)
+    
+def barra_vida(frame,x,y, nivel):
+    longitud=100
+    alto=20
+    fill=int((nivel/100)*longitud)
+    border=pygame.Rect (855,50, longitud, alto )
+    fill= pygame.Rect(855,50,fill , alto)
+    pygame.draw.rect(frame, (255,0,55),fill)
+    pygame.draw.rect(frame,negro,border,4)
+        
 # Clase del jugador
 class Jugador(pygame.sprite.Sprite):
     def __init__(self, width, height):
@@ -35,6 +55,7 @@ class Jugador(pygame.sprite.Sprite):
         self.rect.centery = height - 50
         self.velocidad_x = 0
         self.velocidad = 5
+        self.vida=100
 
     def update(self):
         self.rect.x += self.velocidad_x
@@ -76,6 +97,15 @@ while run:
     jugadores.update()
     window.blit(fondo, (0, 0))
     jugadores.draw(window)
+    
+     # Llamar a la función para dibujar la barra de vida
+    barra_vida(window, 50, 50, jugador.vida)  # Cambia las coordenadas según sea necesario
+
+    # Llamar a la función para dibujar la puntuación
+    score_total(window, f"Puntuación: {score}", 30, 400, 50)
+    
     pygame.display.update()
+
+
 
 pygame.quit()
