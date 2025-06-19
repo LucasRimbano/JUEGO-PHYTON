@@ -100,6 +100,21 @@ class Balas(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+class Balas_enemigos(pygame.sprite.Sprite):
+    def __init__(self, x, y):
+        super().__init__()
+        self.image = pygame.image.load('nuevo_juego/imagenes/B2.png').convert_alpha()
+        self.image = pygame.transform.rotate(self.image,180)
+        self.rect = self.image.get_rect()
+        self.rect.centerx=x
+        self.rect.y=random.randrange(10,width)
+        self.velocidad_y=4
+    
+    def update(self):
+        self.rect.y += self.velocidad_y
+        if self.rect.bottom>height:
+            self.kill()
+
 class Enemigos(pygame.sprite.Sprite):
     def __init__(self,x,y):
         super().__init__()
@@ -114,9 +129,9 @@ class Enemigos(pygame.sprite.Sprite):
         self.rect.x += self.time 
         if self.rect.x >= width:
             self.rect.x = 0
-            self.rect.y += 50
+            self.rect.y += -20
     def disparar_enemigos(self):
-        bala=balas_enemigos(self.rect.centerx,self.rect.bottom)
+        bala=Balas_enemigos(self.rect.centerx,self.rect.bottom)
         grupo_jugador.add(bala)
         grupo_balas_enemigos.add(bala)
         laser_sonido.play()
@@ -162,15 +177,23 @@ while run:
             if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                 jugador.velocidad_x = 0
         
+        for enemigo in grupo_enemigos:
+            if random.randint(0,100)<2:
+                enemigo.disparar_enemigos()
+
 
     # Actualizar y dibujar
     jugadores.update()
     grupo_balas_jugador.update()
     grupo_enemigos.update()
+    grupo_balas_enemigos.update()
     window.blit(fondo, (0, 0))
     jugadores.draw(window)
     grupo_enemigos.draw(window)
     grupo_balas_jugador.draw(window)
+    grupo_balas_enemigos.draw(window)
+
+   
      # Llamar a la función para dibujar la barra de vida
     barra_vida(window, 50, 50, jugador.vida)  # Cambia las coordenadas según sea necesario
 
