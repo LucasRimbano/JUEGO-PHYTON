@@ -1,4 +1,5 @@
 import pygame
+import random
 
 # Inicializar pygame
 pygame.init()
@@ -99,18 +100,48 @@ class Balas(pygame.sprite.Sprite):
         if self.rect.bottom < 0:
             self.kill()
 
+class Enemigos(pygame.sprite.Sprite):
+    def __init__(self,x,y):
+        super().__init__()
+        self.image = pygame.image.load('nuevo_juego/imagenes/E1.png').convert_alpha()
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(1,width-50)
+        self.rect.y = 10
+        self.velocidad_y = random.randrange(-5,20)
+    
+    def update(self):
+        self.time = random.randrange(-1,pygame.time.get_ticks()//5000)
+        self.rect.x += self.time 
+        if self.rect.x >= width:
+            self.rect.x = 0
+            self.rect.y += 50
+    def disparar_enemigos(self):
+        bala=balas_enemigos(self.rect.centerx,self.rect.bottom)
+        grupo_jugador.add(bala)
+        grupo_balas_enemigos.add(bala)
+        laser_sonido.play()
 
 grupo_jugador = pygame.sprite.Group()
+grupo_enemigos = pygame.sprite.Group()
+grupo_balas_jugador = pygame.sprite.Group()
+grupo_balas_enemigos = pygame.sprite.Group()
 
 # Crear el jugador
 jugador = Jugador(width, height)
 jugadores = pygame.sprite.Group()
 jugadores.add(jugador)
-grupo_balas_jugador = pygame.sprite.Group()
+grupo_balas_jugador.add(jugador)
+
+
 # Bucle principal
 run = True
 fps = 60
 clock = pygame.time.Clock()
+
+for x in range(10):
+    enemigo = Enemigos(10,10)
+    grupo_enemigos.add(enemigo)
+    grupo_jugador.add(enemigo)
 
 while run:
     clock.tick(fps)
@@ -135,8 +166,10 @@ while run:
     # Actualizar y dibujar
     jugadores.update()
     grupo_balas_jugador.update()
+    grupo_enemigos.update()
     window.blit(fondo, (0, 0))
     jugadores.draw(window)
+    grupo_enemigos.draw(window)
     grupo_balas_jugador.draw(window)
      # Llamar a la función para dibujar la barra de vida
     barra_vida(window, 50, 50, jugador.vida)  # Cambia las coordenadas según sea necesario
