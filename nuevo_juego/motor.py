@@ -22,6 +22,7 @@ try:
     golpe_sonido =pygame.mixer.Sound('nuevo_juego/sonidos/choque.wav')
 except pygame.error:
     print("Error al cargar uno de los sonidos .wav")
+
 width = fondo.get_width()
 height = fondo.get_height()
 window = pygame.display.set_mode((width, height))
@@ -136,6 +137,33 @@ class Enemigos(pygame.sprite.Sprite):
         grupo_balas_enemigos.add(bala)
         laser_sonido.play()
 
+# Clase de explosión
+class Explosion(pygame.sprite.Sprite):
+    def _init_(self, center):
+        super()._init_()
+        self.frames = []
+        for i in range(1, 12):  # Cargar imágenes de A1.png a A11.png
+            try:
+                img = pygame.image.load(f'nuevo_juego/imagenes/explocion_imagen/A{i}.png').convert_alpha()
+                self.frames.append(img)
+            except pygame.error:
+                print(f"Error al cargar la imagen de explosión A{i}.png. Verifica la ruta.")
+        
+        self.frame = 0
+        self.image = self.frames[self.frame]
+        self.rect = self.image.get_rect(center=center)
+        self.last_update = pygame.time.get_ticks()
+        self.animation_duration = 100  # Duración de cada frame en milisegundos
+
+    def update(self):
+        now = pygame.time.get_ticks()
+        if now - self.last_update > self.animation_duration:
+            self.frame += 1
+            self.last_update = now
+            if self.frame < len(self.frames):
+                self.image = self.frames[self.frame]  # Cambiar a la siguiente imagen
+            else:
+                self.kill()  # Eliminar la explosión después de que termine
 grupo_jugador = pygame.sprite.Group()
 grupo_enemigos = pygame.sprite.Group()
 grupo_balas_jugador = pygame.sprite.Group()
