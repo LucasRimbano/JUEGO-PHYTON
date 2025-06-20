@@ -3,9 +3,49 @@ import random
 import os
 
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+def menu_controles():
+    screen = pygame.display.set_mode((1000, 600))
+    
+    pygame.display.set_caption("Seleccioná los controles")
+    font = pygame.font.SysFont('Arial', 30)
+    seleccion = None
 
+    while seleccion is None:
+        screen.fill((30, 30, 30))
+        titulo1 = font.render("¡Bienvenido al juego!", True, (255, 233, 255))
+        titulo2= font.render("Selecciona tu modo de control", True, (255, 255, 255)) 
+        titulo3 = font.render("¿Como queres moverte?", True, (255, 255, 255))
+        opcion1 = font.render("[←][→] Flechitas", True, (200, 202, 200))
+        opcion2 = font.render("[A][D] WASD", True, (200, 202, 200))
+        opcion3 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))
+        opcion4 = font.render("Presiona [R] para reiniciar", True, (200, 202, 200))
+        opcion6= font.render("CON [SPACE] disparas", True, (200, 202, 200))
+
+        
+        screen.blit(titulo1, (300, 20))
+        screen.blit(titulo2, (280, 100))
+        screen.blit(titulo3, (280, 150))
+        screen.blit(opcion1, (300, 200))
+        screen.blit(opcion2, (300, 250))
+        screen.blit(opcion3, (300, 300))
+        screen.blit(opcion4, (300, 350))
+        screen.blit(opcion6, (300, 400))                
+        pygame.display.flip()
+
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            elif evento.type == pygame.KEYDOWN:
+                if evento.key in [pygame.K_LEFT, pygame.K_RIGHT]:
+                    seleccion = "flechas"
+                elif evento.key in [pygame.K_w, pygame.K_a, pygame.K_d]:
+                    seleccion = "wasd"
+    return seleccion
 def main():
     pygame.init()
+    control = menu_controles()
+
     try:
         fondo = pygame.image.load('nuevo_juego/imagenes/fondo_juego.png')
     except pygame.error:
@@ -22,6 +62,7 @@ def main():
         golpe_sonido.set_volume(0.1)
     except pygame.error:
         print("Error al cargar sonidos")
+        
     width = fondo.get_width()
     height = fondo.get_height()
     window = pygame.display.set_mode((width, height))
@@ -178,15 +219,28 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    jugador.velocidad_x = -jugador.velocidad
-                elif event.key == pygame.K_RIGHT:
-                    jugador.velocidad_x = jugador.velocidad
-                elif event.key == pygame.K_SPACE:
-                    jugador.disparar()
+                if control == "flechas":
+                    if event.key == pygame.K_LEFT:
+                        jugador.velocidad_x = -jugador.velocidad
+                    elif event.key == pygame.K_RIGHT:
+                        jugador.velocidad_x = jugador.velocidad
+                    elif event.key == pygame.K_SPACE:
+                        jugador.disparar()
+                elif control == "wasd":
+                    if event.key == pygame.K_a:
+                        jugador.velocidad_x = -jugador.velocidad
+                    elif event.key == pygame.K_d:
+                        jugador.velocidad_x = jugador.velocidad
+                    elif event.key == pygame.K_SPACE:
+                        jugador.disparar()
             elif event.type == pygame.KEYUP:
-                if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
-                    jugador.velocidad_x = 0
+                if control == "flechas":
+                    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                        jugador.velocidad_x = 0
+                elif control == "wasd":
+                    if event.key == pygame.K_a or event.key == pygame.K_d:
+                        jugador.velocidad_x = 0
+                
 
         for enemigo in grupo_enemigos:
             if random.randint(0, 125) < 1: #probabilidad de disparo 1 entre 100
@@ -210,7 +264,7 @@ def main():
             score += 10
             nuevo_enemigo = Enemigos(10, 10)
             grupo_enemigos.add(nuevo_enemigo)
-            explo = Explosion(enemigo.rect.center)
+            explo = Explosion((enemigo.rect.centerx, enemigo.rect.centery - 25))
             grupo_explosiones.add(explo)
             explosion_sonido.set_volume(0.3)
             explosion_sonido.play()
@@ -245,8 +299,8 @@ def mostrar_game_over(puntuacion):
     window.fill((0, 0, 0))
     font = pygame.font.SysFont('Arial', 40, bold=True)
     texto1 = font.render("¡Perdiste! Bien jugado.", True, (255, 60, 60))
-    texto2 = font.render(f"Puntuación final: {puntuacion}", True, (255, 255, 255))
-    texto3 = font.render("Presioná [R] para volver a jugar o [ESC] para salir", True, (200, 200, 200))
+    texto2 = font.render(f"Puntuacion final: {puntuacion}", True, (255, 255, 255))
+    texto3 = font.render("Presiona [R] para volver a jugar o [ESC] para salir", True, (200, 200, 200))
     window.blit(texto1, texto1.get_rect(center=(width // 2, height // 2 - 60)))
     window.blit(texto2, texto2.get_rect(center=(width // 2, height // 2)))
     window.blit(texto3, texto3.get_rect(center=(width // 2, height // 2 + 60)))
