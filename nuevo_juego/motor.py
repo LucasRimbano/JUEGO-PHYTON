@@ -102,13 +102,15 @@ class Balas(pygame.sprite.Sprite):
             self.kill()
 
 class Balas_enemigos(pygame.sprite.Sprite):
+    #balas enemigas neceitan un alto cambio
+    # porque aparecen en tu cabeza y no salen de los enemigos 
     def __init__(self, x, y):
         super().__init__()
         self.image = pygame.image.load('nuevo_juego/imagenes/B2.png').convert_alpha()
         self.image = pygame.transform.rotate(self.image,180)
         self.rect = self.image.get_rect()
         self.rect.centerx=x
-        self.rect.y=random.randrange(10,width)
+        self.rect.y=random.randrange(3,width)
         self.velocidad_y=4
     
     def update(self):
@@ -130,7 +132,7 @@ class Enemigos(pygame.sprite.Sprite):
         self.rect.x += self.time 
         if self.rect.x >= width:
             self.rect.x = 0
-            self.rect.y += -20
+            self.rect.y += 37
     def disparar_enemigos(self):
         bala=Balas_enemigos(self.rect.centerx,self.rect.bottom)
         grupo_jugador.add(bala)
@@ -139,15 +141,16 @@ class Enemigos(pygame.sprite.Sprite):
 
 # Clase de explosión
 class Explosion(pygame.sprite.Sprite):
-    def _init_(self, center):
-        super()._init_()
+    def __init__(self, center):
+        super().__init__()
         self.frames = []
         for i in range(1, 12):  # Cargar imágenes de A1.png a A11.png
             try:
-                img = pygame.image.load(f'nuevo_juego/imagenes/explocion_imagen/A{i}.png').convert_alpha()
+                img = pygame.image.load(f'nuevo_juego/explosion_imagen/Ex{i}.png').convert_alpha()
+                
                 self.frames.append(img)
             except pygame.error:
-                print(f"Error al cargar la imagen de explosión A{i}.png. Verifica la ruta.")
+                print(f"Error al cargar la imagen de explosión Ex{i}.png. Verifica la ruta.")
         
         self.frame = 0
         self.image = self.frames[self.frame]
@@ -168,6 +171,7 @@ grupo_jugador = pygame.sprite.Group()
 grupo_enemigos = pygame.sprite.Group()
 grupo_balas_jugador = pygame.sprite.Group()
 grupo_balas_enemigos = pygame.sprite.Group()
+grupo_explosiones = pygame.sprite.Group()
 
 # Crear el jugador
 jugador = Jugador(width, height)
@@ -220,6 +224,39 @@ while run:
     grupo_enemigos.draw(window)
     grupo_balas_jugador.draw(window)
     grupo_balas_enemigos.draw(window)
+    grupo_explosiones.update()
+    grupo_explosiones.draw(window)
+
+    colicion1 = pygame.sprite.groupcollide(grupo_enemigos, grupo_balas_jugador,True,True)
+    for i in colicion1:
+        score+=10
+        enemigo.disparar_enemigos()
+        enemigo = Enemigos(300,10)
+        grupo_enemigos.add(enemigo)
+        grupo_jugador.add(enemigo)
+
+        explo = Explosion((i.rect.centerx, i.rect.centery - 30))
+        grupo_explosiones.add(explo)
+        explosion_sonido.set_volume(0.3)
+        explosion_sonido.play()
+    
+    colicion2 = pygame.sprite.spritecollide(jugador,grupo_balas_enemigos,True)
+    for j in colicion2:
+        jugador.vida -= 10
+        if jugador.vida <=0:
+            run = False
+        explo1 = Explosion((i.rect.centerx, i.rect.centery - 30))
+        grupo_jugador.add(explo1)
+        golpe_sonido.play()
+
+    hits = pygame.sprite.spritecollide(jugador,grupo_enemigos,False)
+    for hit in hits:
+        jugador.vida -=100
+        enemigos = Enemigos (10,10)
+        grupo_explosiones.add(enemigos)
+        grupo_enemigos.add(enemigos)
+        if jugador.vida<=0:
+            run = False
 
    
      # Llamar a la función para dibujar la barra de vida
