@@ -33,10 +33,15 @@ def menu_controles():
         pygame.display.flip()
 
         for evento in pygame.event.get():
+        
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 exit()
             elif evento.type == pygame.KEYDOWN:
+                if evento.key == pygame.K_ESCAPE:
+                    print("esc valido")
+                    pygame.quit()
+                    exit()
                 if evento.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                     seleccion = "flechas"
                 elif evento.key in [pygame.K_w, pygame.K_a, pygame.K_d]:
@@ -70,6 +75,7 @@ def main():
     blanco = (255,255,255)
     negro = (0,0,0)
     score = 0
+    curacion_max = 1000
 
     def score_total(frame, text, size, x, y):
         font = pygame.font.SysFont('Small fonts', size, bold=True)
@@ -159,11 +165,16 @@ def main():
             self.rect.x = random.randrange(1, width-50)
             self.rect.y = 10
             self.velocidad_x = 2
+            self.puede_bajar = True
+
+        
         def update(self):
             self.rect.x += self.velocidad_x
             if self.rect.right >= width or self.rect.left <= 0:
-                self.velocidad_x *= -1
-                self.rect.y += 20  # Baja 20 píxeles cada vez que rebota
+                if self.puede_bajar:
+
+                 self.velocidad_x *= -1
+                 self.rect.y += 20  # Baja 20 píxeles cada vez que rebota
 
            
         def disparar_enemigos(self):
@@ -289,6 +300,12 @@ def main():
 
         barra_vida(window, 50, 50, jugador.vida)
         score_total(window, f"Puntuación: {score}", 30, 400, 50)
+        if score >= curacion_max:
+            jugador.vida = 100 # Restablece la vida del jugador al máximo
+            curacion_max += 1000 # Actualiza el próximo hito de puntuación (2000, 3000, etc.)
+            print(f"¡Vida restablecida! Próximo punto de vida extra: {curacion_max}") # Mensaje de confirmación (puedes quitarlo después de probar)
+
+
         pygame.display.update()
 
     return score
