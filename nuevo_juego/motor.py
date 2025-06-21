@@ -1,7 +1,7 @@
 import pygame
 import random
 import os
-
+import time
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 def menu_controles():
     screen = pygame.display.set_mode((1000, 600))
@@ -166,15 +166,18 @@ def main():
             self.rect.y = 10
             self.velocidad_x = 2
             self.puede_bajar = True
+            self.last_bajada_time = 0 
 
         
         def update(self):
             self.rect.x += self.velocidad_x
             if self.rect.right >= width or self.rect.left <= 0:
-                if self.puede_bajar:
-
+                current_time = time.time()
+                if self.puede_bajar and (current_time - self.last_bajada_time > 0.7):
                  self.velocidad_x *= -1
                  self.rect.y += 20  # Baja 20 píxeles cada vez que rebota
+                 self.last_bajada_time = current_time
+
 
            
         def disparar_enemigos(self):
