@@ -20,15 +20,29 @@ def disparar():
     
 def menu_controles():
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-
+    try:
+        fondo_imagen = pygame.image.load('nuevo_juego/imagenes/fondo_princ.jpg')
+        fondo_imagen = pygame.transform.scale(fondo_imagen, (screen.get_width(), screen.get_height()))
+    except pygame.error as e:
+        print(f"No se pudo cargar la imagen: {e}")
+        fondo_imagen = None  # Asigna None o una imagen por defecto si falla
+    if fondo_imagen:
+        screen.blit(fondo_imagen, (0, 0))
+    else:
+        screen.fill((0, 0, 0))
     
+
     pygame.display.set_caption("Seleccioná los controles")
     font = pygame.font.SysFont('Arial', 30)
     font2 = pygame.font.SysFont('Arial', 70)
     seleccion = None
 
     while seleccion is None:
-        screen.fill((30, 30, 30))
+        if fondo_imagen:
+            screen.blit(fondo_imagen, (0, 0))
+        else:
+            screen.fill((30, 30, 30))
+      
         titulo1 = font2.render("¡Bienvenido al juego!", True, (255, 233, 255))
         titulo2= font.render("Selecciona tu modo de control", True, (255, 255, 255)) 
         titulo3 = font.render("¿Como queres moverte?", True, (255, 255, 255))
@@ -39,17 +53,28 @@ def menu_controles():
         titulo4 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))   
         titulo5 = font.render("¡Para entrar al juego apreta [←][→]  SI queres moverte con las flechas!", True, (255, 233, 255))   
         titulo6 = font.render("¡Para entrar al juego apreta [A][D]  SI queres moverte con AD!", True, (255, 233, 255))
+        textos =[
+             (titulo1, (700, 15)),
+            (titulo2, (800, 108)),
+            (titulo3, (800, 150)),
+            (opcion1, (800, 200)),
+            (opcion2, (800, 250)),
+            (opcion4, (800, 320)),
+            (opcion6, (800, 380)),
+            (titulo4, (800, 440)),
+            (titulo5, (590, 800)),
+            (titulo6, (590, 860)),
+            
+        ]
+       
+        
+        for texto, pos in textos:
+            rect = texto.get_rect(topleft=pos)
+            rect.inflate_ip(20, 10)  # Margen alrededor del texto
+            pygame.draw.rect(screen, (0, 0, 0), rect, border_radius=12)
+            screen.blit(texto, pos)
 
-        screen.blit(titulo1, (700, 20))
-        screen.blit(titulo2, (800, 100))
-        screen.blit(titulo3, (800, 150))
-        screen.blit(opcion1, (800, 200))
-        screen.blit(opcion2, (800, 250))
-        screen.blit(opcion4, (800, 320))
-        screen.blit(opcion6, (800, 380))  
-        screen.blit(titulo4, (800, 440))
-        screen.blit(titulo5, (590, 800))
-        screen.blit(titulo6, (590, 860))              
+        
         pygame.display.flip()
 
         for evento in pygame.event.get():
