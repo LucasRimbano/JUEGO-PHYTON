@@ -3,6 +3,21 @@ import random
 import os
 import time
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+
+def medir_tiempo(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        resultado = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} se ejecutó en {end - start:.4f} segundos")
+        return resultado
+    return wrapper
+
+@medir_tiempo
+def disparar():
+    # lógica de disparo simulada
+    time.sleep(0.1)
+    
 def menu_controles():
     screen = pygame.display.set_mode((1000, 600))
     
@@ -20,8 +35,8 @@ def menu_controles():
         opcion3 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))
         opcion4 = font.render("Presiona [R] para reiniciar", True, (200, 202, 200))
         opcion6= font.render("CON [SPACE] disparas", True, (200, 202, 200))
-
         
+                
         screen.blit(titulo1, (300, 20))
         screen.blit(titulo2, (280, 100))
         screen.blit(titulo3, (280, 150))
@@ -62,9 +77,9 @@ def main():
         laser_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/laser.wav')
         laser_sonido.set_volume(0.3) 
         explosion_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/explosion.wav')
-        explosion_sonido.set_volume(0.1)
+        explosion_sonido.set_volume(0.002)
         golpe_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/choque.wav')
-        golpe_sonido.set_volume(0.1)
+        golpe_sonido.set_volume(0.002)
     except pygame.error:
         print("Error al cargar sonidos")
         
@@ -226,7 +241,8 @@ def main():
     run = True
     fps = 60
     clock = pygame.time.Clock()
-
+    enemigos_que_disparan = set()
+    curacion_max = 1000  # Puntuación para curar al jugador
     while run:
         clock.tick(fps)
         for event in pygame.event.get():
@@ -257,8 +273,9 @@ def main():
                 
 
         for enemigo in grupo_enemigos:
-            if random.randint(0, 125) < 1: #probabilidad de disparo 1 entre 100
+            if random.randint(0, 125) < 1 and enemigo not in enemigos_que_disparan:
                 enemigo.disparar_enemigos()
+                enemigos_que_disparan.add(enemigo)
 
         jugadores.update()
         grupo_balas_jugador.update()
