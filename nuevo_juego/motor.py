@@ -19,32 +19,37 @@ def disparar():
     time.sleep(0.1)
     
 def menu_controles():
-    screen = pygame.display.set_mode((1000, 600))
+    screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+
     
     pygame.display.set_caption("Seleccioná los controles")
     font = pygame.font.SysFont('Arial', 30)
+    font2 = pygame.font.SysFont('Arial', 70)
     seleccion = None
 
     while seleccion is None:
         screen.fill((30, 30, 30))
-        titulo1 = font.render("¡Bienvenido al juego!", True, (255, 233, 255))
+        titulo1 = font2.render("¡Bienvenido al juego!", True, (255, 233, 255))
         titulo2= font.render("Selecciona tu modo de control", True, (255, 255, 255)) 
         titulo3 = font.render("¿Como queres moverte?", True, (255, 255, 255))
-        opcion1 = font.render("[←][→] Flechitas", True, (200, 202, 200))
-        opcion2 = font.render("[A][D] WASD", True, (200, 202, 200))
-        opcion3 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))
+        opcion1 = font.render("Presiona [←][→] Flechitas", True, (200, 202, 200))
+        opcion2 = font.render("Presiona [A][D] WASD", True, (200, 202, 200))
         opcion4 = font.render("Presiona [R] para reiniciar", True, (200, 202, 200))
         opcion6= font.render("CON [SPACE] disparas", True, (200, 202, 200))
-        
-                
-        screen.blit(titulo1, (300, 20))
-        screen.blit(titulo2, (280, 100))
-        screen.blit(titulo3, (280, 150))
-        screen.blit(opcion1, (300, 200))
-        screen.blit(opcion2, (300, 250))
-        screen.blit(opcion3, (300, 300))
-        screen.blit(opcion4, (300, 350))
-        screen.blit(opcion6, (300, 400))                
+        titulo4 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))   
+        titulo5 = font.render("¡Para entrar al juego apreta [←][→]  SI queres moverte con las flechas!", True, (255, 233, 255))   
+        titulo6 = font.render("¡Para entrar al juego apreta [A][D]  SI queres moverte con AD!", True, (255, 233, 255))
+
+        screen.blit(titulo1, (700, 20))
+        screen.blit(titulo2, (800, 100))
+        screen.blit(titulo3, (800, 150))
+        screen.blit(opcion1, (800, 200))
+        screen.blit(opcion2, (800, 250))
+        screen.blit(opcion4, (800, 320))
+        screen.blit(opcion6, (800, 380))  
+        screen.blit(titulo4, (800, 440))
+        screen.blit(titulo5, (590, 800))
+        screen.blit(titulo6, (590, 860))              
         pygame.display.flip()
 
         for evento in pygame.event.get():
@@ -59,27 +64,34 @@ def menu_controles():
                     exit()
                 if evento.key in [pygame.K_LEFT, pygame.K_RIGHT]:
                     seleccion = "flechas"
-                elif evento.key in [pygame.K_w, pygame.K_a, pygame.K_d]:
-                    seleccion = "wasd"
+                elif evento.key in [pygame.K_a, pygame.K_d]:
+                    seleccion = "ad"
     return seleccion
 def main():
     pygame.init()
     control = menu_controles()
-
+    
     try:
+        info = pygame.display.Info()
+        screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
         fondo = pygame.image.load('nuevo_juego/imagenes/fondo_juego.png')
+        fondo = pygame.transform.scale(fondo, (info.current_w, info.current_h))
     except pygame.error:
+        info = pygame.display.Info()
+        screen = pygame.display.set_mode((info.current_w, info.current_h), pygame.FULLSCREEN)
         fondo = pygame.Surface((1000, 600))
         fondo.fill((0, 0, 0))
     if fondo.get_width() < 500 or fondo.get_height() < 500:
         fondo = pygame.transform.scale(fondo, (1000, 600))
+    
+
     try:
         laser_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/laser.wav')
         laser_sonido.set_volume(0.3) 
         explosion_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/explosion.wav')
-        explosion_sonido.set_volume(0.002)
+        explosion_sonido.set_volume(0.0000000000002)
         golpe_sonido = pygame.mixer.Sound('nuevo_juego/sonidos/choque.wav')
-        golpe_sonido.set_volume(0.002)
+        golpe_sonido.set_volume(0.2)
     except pygame.error:
         print("Error al cargar sonidos")
         
@@ -96,15 +108,15 @@ def main():
         font = pygame.font.SysFont('Small fonts', size, bold=True)
         text_frame = font.render(text, True, blanco, negro)
         text_rect = text_frame.get_rect()
-        text_rect.midtop = (900, y-25)
+        text_rect.midtop = (1840, y-25)
         frame.blit(text_frame, text_rect)
 
     def barra_vida(frame, x, y, nivel):
         longitud = 100
         alto = 20
         fill = int((nivel/100)*longitud)
-        border = pygame.Rect(855, 50, longitud, alto)
-        fill_rect = pygame.Rect(855, 50, fill, alto)
+        border = pygame.Rect(1770, 50, longitud, alto)
+        fill_rect = pygame.Rect(1770, 50, fill, alto)
         pygame.draw.rect(frame, (255,0,55), fill_rect)
         pygame.draw.rect(frame, negro, border, 4)
 
@@ -120,7 +132,7 @@ def main():
             self.rect.centerx = width // 2
             self.rect.centery = height - 50
             self.velocidad_x = 0
-            self.velocidad = 5
+            self.velocidad = 20
             self.vida = 100
         def update(self):
             self.rect.x += self.velocidad_x
@@ -144,7 +156,7 @@ def main():
             self.rect = self.image.get_rect()
             self.rect.centerx = x
             self.rect.bottom = y
-            self.velocidad_y = -20
+            self.velocidad_y = -35
         def update(self):
             self.rect.y += self.velocidad_y
             if self.rect.bottom < 0:
@@ -162,7 +174,7 @@ def main():
             self.rect = self.image.get_rect()
             self.rect.centerx = x
             self.rect.y = y
-            self.velocidad_y = 4
+            self.velocidad_y = 15
         def update(self):
             self.rect.y += self.velocidad_y
             if self.rect.top > height:
@@ -179,7 +191,7 @@ def main():
             self.rect = self.image.get_rect()
             self.rect.x = random.randrange(1, width-50)
             self.rect.y = 10
-            self.velocidad_x = 2
+            self.velocidad_x = 10
             self.puede_bajar = True
             self.last_bajada_time = 0 
 
@@ -234,7 +246,7 @@ def main():
     jugadores = pygame.sprite.Group()
     jugadores.add(jugador)
 
-    for x in range(10):
+    for x in range(12):
         enemigo = Enemigos(10, 10)
         grupo_enemigos.add(enemigo)
 
@@ -249,6 +261,10 @@ def main():
             if event.type == pygame.QUIT:
                 run = False
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    run = False
+                elif event.key == pygame.K_r:
+                    return mostrar_game_over()
                 if control == "flechas":
                     if event.key == pygame.K_LEFT:
                         jugador.velocidad_x = -jugador.velocidad
@@ -256,7 +272,7 @@ def main():
                         jugador.velocidad_x = jugador.velocidad
                     elif event.key == pygame.K_SPACE:
                         jugador.disparar()
-                elif control == "wasd":
+                elif control == "ad":
                     if event.key == pygame.K_a:
                         jugador.velocidad_x = -jugador.velocidad
                     elif event.key == pygame.K_d:
@@ -267,13 +283,13 @@ def main():
                 if control == "flechas":
                     if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                         jugador.velocidad_x = 0
-                elif control == "wasd":
+                elif control == "ad":
                     if event.key == pygame.K_a or event.key == pygame.K_d:
                         jugador.velocidad_x = 0
                 
-
+        enemigos_que_disparan = set()  # Reinicia el conjunto de enemigos que disparan en cada frame
         for enemigo in grupo_enemigos:
-            if random.randint(0, 125) < 1 and enemigo not in enemigos_que_disparan:
+            if random.randint(0, 25 ) < 1 and enemigo not in enemigos_que_disparan:
                 enemigo.disparar_enemigos()
                 enemigos_que_disparan.add(enemigo)
 
@@ -289,7 +305,8 @@ def main():
         grupo_balas_jugador.draw(window)
         grupo_balas_enemigos.draw(window)
         grupo_explosiones.draw(window)
-
+        enemigos_que_disparan.clear()
+        
         colicion1 = pygame.sprite.groupcollide(grupo_enemigos, grupo_balas_jugador, True, True)
         for enemigo in colicion1:
             score += 10
@@ -322,8 +339,8 @@ def main():
         score_total(window, f"Puntuación: {score}", 30, 400, 50)
         if score >= curacion_max:
             jugador.vida = 100 # Restablece la vida del jugador al máximo
-            curacion_max += 1000 # Actualiza el próximo hito de puntuación (2000, 3000, etc.)
-            print(f"¡Vida restablecida! Próximo punto de vida extra: {curacion_max}") # Mensaje de confirmación (puedes quitarlo después de probar)
+            curacion_max += 1000 # Actualiza el próximo hito de puntuación 
+            print(f"¡Vida restablecida! Próximo punto de vida extra: {curacion_max}") 
 
 
         pygame.display.update()
@@ -338,9 +355,11 @@ def mostrar_game_over(puntuacion):
     texto1 = font.render("¡Perdiste! Bien jugado.", True, (255, 60, 60))
     texto2 = font.render(f"Puntuacion final: {puntuacion}", True, (255, 255, 255))
     texto3 = font.render("Presiona [R] para volver a jugar o [ESC] para salir", True, (200, 200, 200))
+    texto4 = font.render("¡Gracias por jugar!", True, (255, 233, 255))
     window.blit(texto1, texto1.get_rect(center=(width // 2, height // 2 - 60)))
     window.blit(texto2, texto2.get_rect(center=(width // 2, height // 2)))
     window.blit(texto3, texto3.get_rect(center=(width // 2, height // 2 + 60)))
+    window.blit(texto4, texto4.get_rect(center=(width // 2, height // 2 + 120)))
     pygame.display.flip()
     esperando = True
     while esperando:
