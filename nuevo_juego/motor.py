@@ -129,19 +129,24 @@ def main():
     score = 0
     curacion_max = 1000
 
-    def score_total(frame, text, size, x, y):
+    def score_total(frame, text, size, x_ratio, y_ratio):
         font = pygame.font.SysFont('Small fonts', size, bold=True)
         text_frame = font.render(text, True, blanco, negro)
         text_rect = text_frame.get_rect()
-        text_rect.midtop = (1840, y-25)
+        width, height= frame.get_size()
+        text_rect.topleft = (int(width * x_ratio), int(height * y_ratio))
         frame.blit(text_frame, text_rect)
 
-    def barra_vida(frame, x, y, nivel):
-        longitud = 100
-        alto = 20
+    def barra_vida(frame, x_ratio, y_ratio, nivel):
+        
+        width, height = frame.get_size()
+        longitud = int(width * 0.1)
+        alto = int(height * 0.03)
+        x=int(width * x_ratio)
+        y=int(height * y_ratio)
         fill = int((nivel/100)*longitud)
-        border = pygame.Rect(1770, 50, longitud, alto)
-        fill_rect = pygame.Rect(1770, 50, fill, alto)
+        border = pygame.Rect(x, y, longitud, alto)
+        fill_rect = pygame.Rect(x ,y, fill, alto)
         pygame.draw.rect(frame, (255,0,55), fill_rect)
         pygame.draw.rect(frame, negro, border, 4)
 
@@ -360,8 +365,8 @@ def main():
             if jugador.vida <= 0:
                 run = False
 
-        barra_vida(window, 50, 50, jugador.vida)
-        score_total(window, f"Puntuación: {score}", 30, 400, 50)
+        barra_vida(window, 0.03, 0.04, jugador.vida)
+        score_total(window, f"Puntuación: {score}", 30, 0.03, 0.1)
         if score >= curacion_max:
             jugador.vida = 100 # Restablece la vida del jugador al máximo
             curacion_max += 1000 # Actualiza el próximo hito de puntuación 
@@ -375,7 +380,14 @@ def main():
 def mostrar_game_over(puntuacion):
     window = pygame.display.get_surface()
     width, height = window.get_size()
-    window.fill((0, 0, 0))
+    
+    try:
+        fondo_imagen = pygame.image.load('nuevo_juego/imagenes/fondo_princ.jpg')
+        fondo_imagen = pygame.transform.scale(fondo_imagen, (width, height))
+        window.blit(fondo_imagen, (0, 0))
+    except pygame.error:
+        window.fill((0, 0, 0))
+        
     font = pygame.font.SysFont('Arial', 40, bold=True)
     texto1 = font.render("¡Perdiste! Bien jugado.", True, (255, 60, 60))
     texto2 = font.render(f"Puntuacion final: {puntuacion}", True, (255, 255, 255))
