@@ -25,7 +25,7 @@ def menu_controles():
         fondo_imagen = pygame.transform.scale(fondo_imagen, (screen.get_width(), screen.get_height()))
     except pygame.error as e:
         print(f"No se pudo cargar la imagen: {e}")
-        fondo_imagen = None  # Asigna None o una imagen por defecto si falla
+        fondo_imagen = None  
     if fondo_imagen:
         screen.blit(fondo_imagen, (0, 0))
     else:
@@ -53,26 +53,26 @@ def menu_controles():
         titulo4 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))   
         titulo5 = font.render("¡Para entrar al juego apreta [←][→]  SI queres moverte con las flechas!", True, (255, 233, 255))   
         titulo6 = font.render("¡Para entrar al juego apreta [A][D]  SI queres moverte con AD!", True, (255, 233, 255))
+        
         textos =[
-             (titulo1, (700, 15)),
-            (titulo2, (800, 108)),
-            (titulo3, (800, 150)),
-            (opcion1, (800, 200)),
-            (opcion2, (800, 250)),
-            (opcion4, (800, 320)),
-            (opcion6, (800, 380)),
-            (titulo4, (800, 440)),
-            (titulo5, (590, 800)),
-            (titulo6, (590, 860)),
-            
+            (titulo1,  60),
+            (titulo2, 160),
+            (titulo3, 210),
+            (opcion1, 260),
+            (opcion2, 310),
+            (opcion4, 380),
+            (opcion6, 430),
+            (titulo4, 480),
+            (titulo5, screen.get_height() - 160),
+            (titulo6, screen.get_height() - 110),
         ]
        
         
-        for texto, pos in textos:
-            rect = texto.get_rect(topleft=pos)
-            rect.inflate_ip(20, 10)  # Margen alrededor del texto
+        for texto, y in textos:
+            rect = texto.get_rect(center=(screen.get_width()// 2, y))
+            rect.inflate_ip(20, 10)  
             pygame.draw.rect(screen, (0, 0, 0), rect, border_radius=12)
-            screen.blit(texto, pos)
+            screen.blit(texto, rect.topleft)
 
         
         pygame.display.flip()
