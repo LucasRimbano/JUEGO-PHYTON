@@ -1,5 +1,6 @@
 El usuario controla una nave espacial que debe disparar y esquivar balas enemigas. El objetivo principal es destruir enemigos para ganar puntos y sobrevivir el mayor tiempo posible.
-🎮 **Características del juego**
+
+## 🎮 **Características del juego**
 - Animaciones de explosiones
 - Disparos del jugador y enemigos
 - Sistema de puntuación
@@ -8,13 +9,13 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 - Curación automática cada ciertos puntos
 - Pantallas de inicio e instrucciones
 
-## ⚙️ Instrucciones de Uso
+## ⚙️ **Instrucciones de Uso**
 1. Asegurate de tener *Python 3.8+* instalado.
 2. Instala la librería *Pygame* si no la tenés:
    ```bash
    pip install pygame
    
-🕹️ **Instrucciones de uso del juego**
+## 🕹️ **Instrucciones de uso del juego**
 - Mover la nave:
 - Flechas ← →
 - o teclas A / D (según elección inicial)
@@ -22,7 +23,7 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 - Reiniciar partida: R
 - Salir: ESC
 
-⚙️ Funcionalidades implementadas
+## ⚙️ **Funcionalidades implementadas**
 - Actualización de enemigos, balas y puntuación: mediante bucles for
 - Animaciones y enemigos múltiples: con ciclos range
 - Posiciones y colores: definidos con tuplas
