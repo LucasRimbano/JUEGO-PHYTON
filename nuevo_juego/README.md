@@ -9,6 +9,13 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 - Curación automática cada ciertos puntos
 - Pantallas de inicio e instrucciones
 
+## 👤 **Integrantes del grupo**
+-Carolina Cottini
+-Julio Fernández Martínez
+-Lucas Rimbano
+-Nahuel Galeano
+-Pedro Mendy
+
 ## ⚙️ **Instrucciones de Uso**
 1. Asegurate de tener *Python 3.8+* instalado.
 2. Instala la librería *Pygame* si no la tenés:
