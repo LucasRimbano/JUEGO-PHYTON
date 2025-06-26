@@ -9,6 +9,9 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 - Curación automática cada ciertos puntos
 - Pantallas de inicio e instrucciones
 
+[![Ver video](https://img.youtube.com/vi/SF5AseoXdS8/hqdefault.jpg)](https://youtu.be/SF5AseoXdS8)
+
+
 ## 👤 **Integrantes del grupo**
 - Carolina Cottini
 - Julio Fernández Martínez
