@@ -12,6 +12,7 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 ## ⚙️ **Instrucciones de Uso**
 1. Asegurate de tener *Python 3.8+* instalado.
 2. Instala la librería *Pygame* si no la tenés:
+
    ```bash
    pip install pygame
    
