@@ -20,29 +20,15 @@ def disparar():
     
 def menu_controles():
     screen = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-    try:
-        fondo_imagen = pygame.image.load('nuevo_juego/imagenes/fondo_princ.jpg')
-        fondo_imagen = pygame.transform.scale(fondo_imagen, (screen.get_width(), screen.get_height()))
-    except pygame.error as e:
-        print(f"No se pudo cargar la imagen: {e}")
-        fondo_imagen = None  
-    if fondo_imagen:
-        screen.blit(fondo_imagen, (0, 0))
-    else:
-        screen.fill((0, 0, 0))
-    
 
+    
     pygame.display.set_caption("Seleccioná los controles")
     font = pygame.font.SysFont('Arial', 30)
     font2 = pygame.font.SysFont('Arial', 70)
     seleccion = None
 
     while seleccion is None:
-        if fondo_imagen:
-            screen.blit(fondo_imagen, (0, 0))
-        else:
-            screen.fill((30, 30, 30))
-      
+        screen.fill((30, 30, 30))
         titulo1 = font2.render("¡Bienvenido al juego!", True, (255, 233, 255))
         titulo2= font.render("Selecciona tu modo de control", True, (255, 255, 255)) 
         titulo3 = font.render("¿Como queres moverte?", True, (255, 255, 255))
@@ -53,28 +39,17 @@ def menu_controles():
         titulo4 = font.render("Presiona [ESC] para salir", True, (200, 202, 200))   
         titulo5 = font.render("¡Para entrar al juego apreta [←][→]  SI queres moverte con las flechas!", True, (255, 233, 255))   
         titulo6 = font.render("¡Para entrar al juego apreta [A][D]  SI queres moverte con AD!", True, (255, 233, 255))
-        
-        textos =[
-            (titulo1,  60),
-            (titulo2, 160),
-            (titulo3, 210),
-            (opcion1, 260),
-            (opcion2, 310),
-            (opcion4, 380),
-            (opcion6, 430),
-            (titulo4, 480),
-            (titulo5, screen.get_height() - 160),
-            (titulo6, screen.get_height() - 110),
-        ]
-       
-        
-        for texto, y in textos:
-            rect = texto.get_rect(center=(screen.get_width()// 2, y))
-            rect.inflate_ip(20, 10)  
-            pygame.draw.rect(screen, (0, 0, 0), rect, border_radius=12)
-            screen.blit(texto, rect.topleft)
 
-        
+        screen.blit(titulo1, (700, 20))
+        screen.blit(titulo2, (800, 100))
+        screen.blit(titulo3, (800, 150))
+        screen.blit(opcion1, (800, 200))
+        screen.blit(opcion2, (800, 250))
+        screen.blit(opcion4, (800, 320))
+        screen.blit(opcion6, (800, 380))  
+        screen.blit(titulo4, (800, 440))
+        screen.blit(titulo5, (590, 800))
+        screen.blit(titulo6, (590, 860))              
         pygame.display.flip()
 
         for evento in pygame.event.get():
@@ -129,24 +104,19 @@ def main():
     score = 0
     curacion_max = 1000
 
-    def score_total(frame, text, size, x_ratio, y_ratio):
+    def score_total(frame, text, size, x, y):
         font = pygame.font.SysFont('Small fonts', size, bold=True)
         text_frame = font.render(text, True, blanco, negro)
         text_rect = text_frame.get_rect()
-        width, height= frame.get_size()
-        text_rect.topleft = (int(width * x_ratio), int(height * y_ratio))
+        text_rect.midtop = (1840, y-25)
         frame.blit(text_frame, text_rect)
 
-    def barra_vida(frame, x_ratio, y_ratio, nivel):
-        
-        width, height = frame.get_size()
-        longitud = int(width * 0.1)
-        alto = int(height * 0.03)
-        x=int(width * x_ratio)
-        y=int(height * y_ratio)
+    def barra_vida(frame, x, y, nivel):
+        longitud = 100
+        alto = 20
         fill = int((nivel/100)*longitud)
-        border = pygame.Rect(x, y, longitud, alto)
-        fill_rect = pygame.Rect(x ,y, fill, alto)
+        border = pygame.Rect(1770, 50, longitud, alto)
+        fill_rect = pygame.Rect(1770, 50, fill, alto)
         pygame.draw.rect(frame, (255,0,55), fill_rect)
         pygame.draw.rect(frame, negro, border, 4)
 
@@ -365,8 +335,8 @@ def main():
             if jugador.vida <= 0:
                 run = False
 
-        barra_vida(window, 0.03, 0.04, jugador.vida)
-        score_total(window, f"Puntuación: {score}", 30, 0.03, 0.1)
+        barra_vida(window, 50, 50, jugador.vida)
+        score_total(window, f"Puntuación: {score}", 30, 400, 50)
         if score >= curacion_max:
             jugador.vida = 100 # Restablece la vida del jugador al máximo
             curacion_max += 1000 # Actualiza el próximo hito de puntuación 
@@ -380,14 +350,7 @@ def main():
 def mostrar_game_over(puntuacion):
     window = pygame.display.get_surface()
     width, height = window.get_size()
-    
-    try:
-        fondo_imagen = pygame.image.load('nuevo_juego/imagenes/fondo_princ.jpg')
-        fondo_imagen = pygame.transform.scale(fondo_imagen, (width, height))
-        window.blit(fondo_imagen, (0, 0))
-    except pygame.error:
-        window.fill((0, 0, 0))
-        
+    window.fill((0, 0, 0))
     font = pygame.font.SysFont('Arial', 40, bold=True)
     texto1 = font.render("¡Perdiste! Bien jugado.", True, (255, 60, 60))
     texto2 = font.render(f"Puntuacion final: {puntuacion}", True, (255, 255, 255))
