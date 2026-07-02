@@ -8,8 +8,12 @@
   ],
   "routes": [
     {
+      "src": "/",
+      "dest": "/nuevo_juego/build/web/index.html"
+    },
+    {
       "src": "/(.*)",
-      "dest": "nuevo_juego/build/web/$1"
+      "dest": "/nuevo_juego/build/web/$1"
     }
   ]
 }
