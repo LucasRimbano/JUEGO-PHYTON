@@ -25,6 +25,31 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 
    ```bash
    pip install pygame
+   ```
+
+## 🌐 **Version web**
+Este juego tambien se puede empaquetar como pagina web usando `pygbag`.
+
+Desde la raiz del proyecto:
+
+```bash
+source .venv/bin/activate
+python -m pygbag --build --disable-sound-format-error nuevo_juego
+```
+
+La carpeta que se sube a internet es:
+
+```text
+nuevo_juego/build/web/
+```
+
+Para probar la pagina final:
+
+```bash
+python -m http.server 8000 --directory nuevo_juego/build/web
+```
+
+Despues abri `http://localhost:8000`.
    
 ## 🕹️ **Instrucciones de uso del juego**
 - Mover la nave:
@@ -32,7 +57,9 @@ El usuario controla una nave espacial que debe disparar y esquivar balas enemiga
 - o teclas A / D (según elección inicial)
 - Disparar: ESPACIO
 - Reiniciar partida: R
-- Salir: ESC
+- Terminar partida: ESC
+- La vida se restaura al llegar a 1000 puntos, y luego cada 1000 puntos más.
+- Al perder o terminar con ESC, la version web pide un nombre y guarda los 5 mejores puntajes en ese navegador.
 
 ## ⚙️ **Funcionalidades implementadas**
 - Actualización de enemigos, balas y puntuación: mediante bucles for
